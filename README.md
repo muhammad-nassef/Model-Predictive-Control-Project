@@ -1,8 +1,47 @@
-# CarND-Controls-MPC
+# Nonlinear-Model-Predictive-Cotrol-Project
 Self-Driving Car Engineer Nanodegree Program
 
----
+![vehicle](./vehicle.PNG)
 
+---
+## Introduction
+The project target is to control the vehicle maneuver through a simulated track using the model predictive control algorithm. The simulation sends telemetry and track waypoint data via websocket and the control algorithms use them to calculate the steering and acceleration commands and send them back to the simulator. The solution should also handle the latency.
+
+The solution makes use of the Ipopt and CppAD libraries. The algorithm calculates the optimal trajectory and its relevant control commands to minimize the error between the reference and the current state with a 3rd degree polynomial predicted trajectory. The solution optimize the predicted trajectory based on the vehicle kinematic model and the cost function which takes into account (cross-track error, orientation error, difference between consequent actuation commands and the sum of the steering command to the acceleration command). 
+
+#Vehicle Kinematic Model
+
+I used the kinematic model which has the following equations sequence:
+
+ ![equations](./kinematic_model.PNG)
+
+
+Where:
+x_t,y_t,v_t,ψ_t are the vehicle position in x , position in y , velocity and orientation respectively at time t
+
+δ_t,a_t are the steering and acceleration control inputs at time t
+
+cte,eψ_t are the cross tracked error and the orientation error at time t
+
+dt is the difference between the time at t+1 and the time at t
+
+ψ_des is the desired orientation angle and it is the tangential angle of the polynomial f(x_t ) 
+
+it can be calculated as follows:
+ψ_des= arctan(f`(x_t))
+
+
+## Timestep Length and Elapsed Duration (N & dt)
+
+To calculate the optimum timestep length and elapsed duration I tried many values of N and dt. first I worked on getting a prediction horizon T = N*dt of 1 sec which is the duration over which future predictions are made so I tried many values around that (dt = 0.05 & N = 20, dt = 0.1 & N = 10, dt = 0.05 & N = 25) and the best fitting values for my implementation was dt = 0.1 a& N = 10
+
+## Polynomial Fitting and MPC Preprocessing
+
+I used a 3rd degree polynomial to fit the predicted trajectory. 
+The way points are transformed from the global coordinates to the local vehicle coordinate at the pre-processing step.
+
+## Model Predictive Control with Latency
+There is a delay of 100 ms between the timesteps. This delay can result in a control input which doesn't belong to the current timestamp. To deal with that I take the previous control commands as the current each timestep so the actuation are applied on a later timestamp. also adding more penality to the difference between control commands improved the performance.
 ## Dependencies
 
 * cmake >= 3.5
