@@ -1,7 +1,7 @@
 # Nonlinear-Model-Predictive-Cotrol-Project
 Self-Driving Car Engineer Nanodegree Program
 
-![vehicle](./vehicle.PNG)
+![vehicle](./vehicle.png)
 
 ---
 ## Introduction
@@ -13,7 +13,7 @@ The solution makes use of the Ipopt and CppAD libraries. The algorithm calculate
 
 I used the kinematic model which has the following equations sequence:
 
- ![equations](./kinematic_model.PNG)
+ ![equations](./kinematic_model.png)
 
 
 Where:
